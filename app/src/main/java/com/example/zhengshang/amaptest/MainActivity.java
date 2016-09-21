@@ -1,5 +1,7 @@
 package com.example.zhengshang.amaptest;
 
+import android.Manifest;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -24,6 +26,11 @@ import com.amap.api.services.poisearch.PoiSearch;
 
 import java.util.ArrayList;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
+
+@RuntimePermissions
 public class MainActivity extends AppCompatActivity implements PoiSearch.OnPoiSearchListener {
     public static final String TAG = "MainActivity";
     private TextView textView;
@@ -78,7 +85,25 @@ public class MainActivity extends AppCompatActivity implements PoiSearch.OnPoiSe
         initSpinner();
         initAMap();
 
+        MainActivityPermissionsDispatcher.startLocationWithCheck(this);
 
+    }
+
+    private void setTextWithColor(String text, int color) {
+        textView.setText(text);
+        textView.setTextColor(color);
+    }
+
+    @OnPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION)
+    void showDeniedForLocation() {
+        setTextWithColor("只有打开定位权限才能正常使用此应用", Color.RED);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // NOTE: delegate the permission handling to generated method
+        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     private void initSpinner() {
@@ -128,8 +153,10 @@ public class MainActivity extends AppCompatActivity implements PoiSearch.OnPoiSe
 
         //获取一次定位结果：
         //该方法默认为false。
-        mLocationOption.setOnceLocation(true);
-        //mLocationOption.setInterval(20 * 1000);
+        //mLocationOption.setOnceLocation(true);
+        mLocationOption.setInterval(20 * 1000);
+
+        mLocationOption.setLocationCacheEnable(false);
 
         //设置是否返回地址信息（默认返回地址信息）
         mLocationOption.setNeedAddress(true);
@@ -143,16 +170,17 @@ public class MainActivity extends AppCompatActivity implements PoiSearch.OnPoiSe
                     if (amapLocation.getErrorCode() == 0) {
                         //解析定位结果
                         Log.i(TAG, amapLocation.getPoiName());
-                        Log.i(TAG, "Accuracy = " + amapLocation.getAccuracy());
                         latitude = amapLocation.getLatitude();
                         longitude = amapLocation.getLongitude();
-                        textView.setText("latitude = " + latitude + "\nlongitude = " + longitude);
+                        setTextWithColor("latitude = " + latitude + "\nlongitude = " + longitude, Color.BLACK);
                         cityCode = amapLocation.getCity();
-                        //doSearch();
+                        doSearch();
                         mLocationClient.stopLocation();
                     } else if (amapLocation.getErrorCode() == 12) {
+                        setTextWithColor(amapLocation.getErrorInfo(), Color.RED);
                         Toast.makeText(getApplicationContext(), "权限不足，请在设置中授予相应权限", Toast.LENGTH_SHORT).show();
                     } else {
+                        setTextWithColor(amapLocation.getErrorInfo(), Color.RED);
                         Log.e(TAG, "error code = " + amapLocation.getErrorCode());
                     }
                 }
@@ -162,6 +190,10 @@ public class MainActivity extends AppCompatActivity implements PoiSearch.OnPoiSe
         //给定位客户端对象设置定位参数
         mLocationClient.setLocationOption(mLocationOption);
 
+    }
+
+    @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+    void startLocation() {
         //启动定位
         mLocationClient.startLocation();
     }
@@ -190,8 +222,10 @@ public class MainActivity extends AppCompatActivity implements PoiSearch.OnPoiSe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mLocationClient.stopLocation();//停止定位后，本地定位服务并不会被销毁
-        mLocationClient.onDestroy();//销毁定位客户端，同时销毁本地定位服务。
+        if (mLocationClient != null) {
+            mLocationClient.stopLocation();//停止定位后，本地定位服务并不会被销毁
+            mLocationClient.onDestroy();//销毁定位客户端，同时销毁本地定位服务。
+        }
     }
 
     @Override
@@ -219,8 +253,10 @@ public class MainActivity extends AppCompatActivity implements PoiSearch.OnPoiSe
             Log.e(TAG, "error_network");
             Toast.makeText(getApplicationContext(), "网络异常", Toast.LENGTH_SHORT).show();
         } else if (rCode == 32) {
+            setTextWithColor("error key", Color.RED);
             Log.e(TAG, "error_key");
         } else {
+            setTextWithColor("poi error code = " + rCode, Color.RED);
             Log.e(TAG, "error_other：" + rCode);
         }
         loadComplete();
