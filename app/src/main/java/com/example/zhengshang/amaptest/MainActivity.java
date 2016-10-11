@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements PoiSearch.OnPoiSe
     private double longitude;
     private double latitude;
     private String cityCode;
-    private ListView mList;
+    private ListViewForScrollView mList;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> locationDataList = new ArrayList<>();
 
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements PoiSearch.OnPoiSe
         setContentView(R.layout.activity_main);
 
         textView = (TextView) findViewById(R.id.location_text);
-        mList = (ListView) findViewById(R.id.list);
+        mList = (ListViewForScrollView) findViewById(R.id.list);
         mSpinner = (Spinner) findViewById(R.id.spinner);
         mProgressBar = (ProgressBar) findViewById(R.id.load);
 
@@ -251,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements PoiSearch.OnPoiSe
 
         } else if (rCode == 27) {
             Log.e(TAG, "error_network");
-            Toast.makeText(getApplicationContext(), "网络异常", Toast.LENGTH_SHORT).show();
+            setTextWithColor("网络异常", Color.RED);
         } else if (rCode == 32) {
             setTextWithColor("error key", Color.RED);
             Log.e(TAG, "error_key");
