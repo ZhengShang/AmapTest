@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="UiSeeKBar">
+        <attr name="numTextFormat" format="string"/>
+        <attr name="numbackground" format="reference"/>
+        <attr name="numberBgShow" format="boolean" />
+        <attr name="numTextSize" format="dimension"/>
+        <attr name="numTextColor" format="color"/>
+        <attr name="numScale" format="string"/>
+        <attr name="numType" format="enum">
+            <enum name="top" value="48"/>
+            <enum name="bottom" value="80"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="CirclePercentView">
+        <attr name="radius" format="dimension"/>
+        <attr name="stripeWidth" format="dimension"/><!--色带宽度-->
+        <attr name="percent" format="integer"/><!--百分比 最大值为100-->
+        <attr name="smallColor" format="color"/><!--色带颜色-->
+        <!--外圈颜色-->
+        <attr name="bigColor" format="color"/>
+        <!--中间字体大小-->
+        <attr name="centerTextSize" format="dimension"/>
+    </declare-styleable>
+</resources>
