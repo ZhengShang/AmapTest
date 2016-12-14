@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements PoiSearch.OnPoiSe
                         Log.i(TAG, amapLocation.getPoiName());
                         latitude = amapLocation.getLatitude();
                         longitude = amapLocation.getLongitude();
-                        setTextWithColor("latitude = " + latitude + "\nlongitude = " + longitude, Color.BLACK);
+                        setTextWithColor("纬度 = " + latitude + "\n经度 = " + longitude, Color.BLACK);
                         cityCode = amapLocation.getCity();
                         doSearch();
                         mLocationClient.stopLocation();
