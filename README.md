@@ -2,9 +2,11 @@
 
 ## 应用介绍
 测试高德地图SDK的POI信息数据类型deepType的应用
-
-
 具体介绍文章请参考：http://www.jianshu.com/p/3e30cc0fa1ff
+
+## 应用下载
+Demo[下载](https://github.com/ZhengShang/AmapTest/blob/master/AMapTest.apk?raw=true)
+
 ## 应用截图
 
 #### 正常页面
